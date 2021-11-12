@@ -1,0 +1,18 @@
+{
+  "include": ["./src"],
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "declaration": true,
+    "jsx": "react",
+    "target": "ES2018",
+    "outDir": "./dist/esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": ["ESNext", "DOM"],
+    "strict": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "isolatedModules": true,
+    "esModuleInterop": true
+  }
+}
