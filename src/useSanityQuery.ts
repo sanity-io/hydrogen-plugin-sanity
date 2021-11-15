@@ -33,15 +33,23 @@ function useSanityQuery<T>({
         method: 'POST',
         headers: token
           ? {
-              Authorization: `Bearer ${token}`
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
             }
-          : {},
+          : {
+              'Content-Type': 'application/json'
+            },
         body: JSON.stringify({
           query,
           params
         })
       })
     ).json()
+
+    // if (!data.result) {
+    //   throw new Error(data.error?.description || "[hydrogen-plugin-sanity] Couldn't fetch data")
+    // }
+
     return data.result
   })
 
