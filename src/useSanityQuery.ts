@@ -1,5 +1,4 @@
 import {useQuery} from '@shopify/hydrogen'
-import SanityClient from 'picosanity'
 
 import {SanityQueryClientOptions, UseSanityQueryResponse} from './types'
 import useSanityConfig from './useSanityConfig'
@@ -21,12 +20,29 @@ function useSanityQuery<T>({
   params = {},
   ...props
 }: UseSanityQueryProps): UseSanityQueryResponse<T> {
-  const config = useSanityConfig(props.clientConfig)
-  const client = new SanityClient(config)
+  const {apiVersion, projectId, useCdn, dataset, token} = useSanityConfig(props.clientConfig)
+  const version = apiVersion || 'v2021-10-24'
+  const baseDomain = `${projectId}.${useCdn ? 'apicdn' : 'api'}.sanity.io`
+  const url = `https://${baseDomain}/${
+    version.startsWith('v') ? version : `v${version}`
+  }/data/query/${dataset}`
 
   const {data: sanityData, error} = useQuery<T>([query, params], async () => {
-    const data = await client.fetch(query, params)
-    return data
+    const data = await (
+      await fetch(url, {
+        method: 'POST',
+        headers: token
+          ? {
+              Authorization: `Bearer ${token}`
+            }
+          : {},
+        body: JSON.stringify({
+          query,
+          params
+        })
+      })
+    ).json()
+    return data.result
   })
 
   const shopifyProducts = useSanityShopifyProducts(sanityData, props)
