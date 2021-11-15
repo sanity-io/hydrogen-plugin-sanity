@@ -25,18 +25,18 @@ export default {
     projectId: import.meta.VITE_SANITY_ID,
     // Or add them directly inline
     dataset: 'production',
-    apiVersion: 'v2021-06-07',
-  },
-};
+    apiVersion: 'v2021-06-07'
+  }
+}
 ```
 
-Now you're ready to fetch data from a Sanity instance.
+Now you're ready to fetch data from a Sanity instance. Keep in mind that **queries must be ran in server components**.
 
 ### Fetching Sanity data through GraphQL
 
 ```js
 // Using GraphQL
-import {useSanityGraphQLQuery} from '@shopify/hydrogen-plugin-sanity';
+import {useSanityGraphQLQuery} from '@shopify/hydrogen-plugin-sanity'
 
 const {sanityData} = useSanityGraphQLQuery({
   query: gql`
@@ -53,15 +53,15 @@ const {sanityData} = useSanityGraphQLQuery({
       }
     }
   `,
-  variables: {homeId: 'homepage'},
-});
+  variables: {homeId: 'homepage'}
+})
 ```
 
 ### Fetching data through [GROQ](https://www.sanity.io/docs/overview-groq)
 
 ```js
 // Using GROQ
-import {useSanityQuery} from '@shopify/hydrogen-plugin-sanity';
+import {useSanityQuery} from '@shopify/hydrogen-plugin-sanity'
 
 const {sanityData} = useSanityQuery({
   query: `*[_id == $homeId][0]{
@@ -76,8 +76,8 @@ const {sanityData} = useSanityQuery({
       }
     }
     `,
-  params: {homeId: 'homepage'},
-});
+  params: {homeId: 'homepage'}
+})
 ```
 
 ### Getting product data from Shopify
@@ -85,7 +85,7 @@ const {sanityData} = useSanityQuery({
 By default, the hook will automatically look for Shopify products referenced in your Sanity data and fetch them from Shopify for fresh inventory data. The resulting data will be returned through the `shopifyProducts` object:
 
 ```jsx
-import {BuyNowButton, ProductProvider} from '@shopify/hydrogen';
+import {BuyNowButton, ProductProvider} from '@shopify/hydrogen'
 
 const Homepage = () => {
   const {sanityData, shopifyProducts} = useSanityQuery({
@@ -100,40 +100,41 @@ const Homepage = () => {
         }
       }
     }
-    `,
-  });
-  
+    `
+  })
+
   return (
     <div>
       <h1>{sanityData.title}</h1>
       <div>
         {sanityData.featuredProducts.map((product) => {
           // From the product's ID in Sanity, let's get its Shopify data
-          const shopifyProduct = shopifyProducts?.[product?._id];
-          const firstVariant = shopifyProduct?.variants?.edges[0]?.node;
-  
+          const shopifyProduct = shopifyProducts?.[product?._id]
+          const firstVariant = shopifyProduct?.variants?.edges[0]?.node
+
           return (
-            <ProductProvider
-              value={shopifyProduct}
-              initialVariantId={firstVariant?.id}
-            >
+            <ProductProvider value={shopifyProduct} initialVariantId={firstVariant?.id}>
               <h2>{shopifyProduct.title}</h2>
               <BuyNowButton>Buy now</BuyNowButton>
             </ProductProvider>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }
 ```
+
+At this point, you now have both your data from Sanity and fresh product data from Storefront API that you can inject right into your Hydrogen [`<ProductProvider>`][hydrogen-product-provider] components to take advantage of their various [Product helper components][hydrogen-product-components].
+
+How you choose to combine these two sources of data in your app is a matter of personal preference and project structure. Refer to our [hydrogen-sanity-demo](https://github.com/sanity-io/hydrogen-sanity-demo) for an example of how to use this data.
 
 ### Advanced product querying
 
 You can customize what data you fetch from Shopify on a product basis with the `getProductGraphQLFragment` function. For example, if we're on a legal page where there's no product to buy, we can skip fetching any Shopify data:
 
 ```js
-const {handle} = useParams();
+const {handle} = useParams()
 
 const {sanityData} = useSanityQuery({
   query: `*[
@@ -144,8 +145,8 @@ const {sanityData} = useSanityQuery({
     handle
   },
   // No need to query Shopify product data
-  getProductGraphQLFragment: () => false,
-});
+  getProductGraphQLFragment: () => false
+})
 ```
 
 `getProductGraphQLFragment` receives an object with `shopifyId`, `sanityId`, and `occurrences` - where in the data structure this product has been found - and must return either:
@@ -185,7 +186,7 @@ In this example, let's assume the data from Sanity is as follows:
             "handle": "special-product"
           }
         }
-      },
+      }
     ]
   }
 }
@@ -194,12 +195,12 @@ In this example, let's assume the data from Sanity is as follows:
 From this data structure, here's how we'd achieve that:
 
 ```js
-const { sanityData, shopifyProducts } = useSanityQuery({
+const {sanityData, shopifyProducts} = useSanityQuery({
   query: QUERY,
-  getProductGraphQLFragment: ({ occurrences }) => {
-    // If the product ID shows up in 2+ places, fetch the default product data 
+  getProductGraphQLFragment: ({occurrences}) => {
+    // If the product ID shows up in 2+ places, fetch the default product data
     if (occurrences.length > 1) {
-      return true;
+      return true
     }
 
     /* Immediate parent of where this product appears (occurrences[0][0]) -> {
@@ -219,18 +220,93 @@ const { sanityData, shopifyProducts } = useSanityQuery({
         }
       }
     }*/
-    if (occurrences[0][1]?._type === "section-item") {
+    if (occurrences[0][1]?._type === 'section-item') {
       if (!occurrences[0][1].featured) {
         //  We only want the title & handle for non-featured products
         return `
       title
       handle
-      `;
+      `
       }
     }
 
     // Get the default ProductProviderFragment otherwise
-    return true;
-  },
-});
+    return true
+  }
+})
 ```
+
+### Using `useSanityQuery` to fetch Sanity data only
+
+`useSanityQuery` won't make any requests to the Storefront API for products if it can't find any valid references. However, you can specifically opt-out of this behavior by providing a custom `getProductGraphQLFragment` function which always returns false.
+
+```javascript
+const {sanityData} = useSanityQuery({
+  query: `
+    *[_type == "page.legal"][0] {
+      slug.current == $handle
+    }
+  `,
+  params: {handle},
+  // No need to query Shopify product data
+  getProductGraphQLFragment: () => false
+})
+```
+
+## How it works
+
+<img width="700" alt="useSanityQuery flow diagram" src="https://user-images.githubusercontent.com/209129/141044556-6fbcfaf4-226e-4749-aa0e-6428c5f46850.png">
+
+### Assumptions
+
+In order for `useSanityQuery` to be able to identify Shopify products in your dataset and query for them on your behalf, there are two rules you must follow:
+
+**1. Your Shopify product documents in Sanity must have an `_id` with the following naming convention:**
+
+**`shopifyProduct-${ID}`**
+
+Where `ID` is the ID of the product in Shopify. This is exposed in the URL when navigating your Shopify admin
+e.g. `https://my-shopify-store.myshopify.com/admin/products/6639629926487`
+
+The correct document `_id` for the above example would be:  
+`shopifyProduct-6639629926487`
+
+**2. Your Sanity query response must return these IDs in either `_id` or `_ref` keys**
+
+These can any number of levels nested in your response. Either of the below are valid.
+
+```javascript
+"result": {
+  "products": {
+    [
+      {
+        "_ref": "shopifyProduct-6639500034135",
+      },
+      {
+        "_ref": "shopifyProduct-6639504195671",
+      },
+    ]
+  }
+}
+```
+
+```javascript
+"result": {
+  "body": [
+    {
+      "_type": "myCustomPortableTextBlock",
+      "caption": "Product caption",
+      "myNestedObject": {
+        "product": {
+          "_ref": "shopifyProduct-6639629926487"
+        }
+      }
+    },
+  ]
+}
+```
+
+If you're using Sanity Connect, it will automatically create documents with this naming convention by default.
+
+[hydrogen-product-components]: https://shopify.dev/api/hydrogen/components/product-variant
+[hydrogen-product-provider]: https://shopify.dev/api/hydrogen/components/product-variant/productprovider
