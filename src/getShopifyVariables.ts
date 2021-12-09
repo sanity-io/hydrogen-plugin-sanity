@@ -5,7 +5,7 @@ const getShopifyVariables = (
 ): Required<SanityQueryClientOptions['shopifyVariables']> => {
   return {
     // Defaults taken from https://shopify.dev/beta/hydrogen/getting-started#step-4-make-graphql-changes
-    country: 'US',
+    country: '',
     numProductMetafields: 0,
     numProductVariants: 250,
     numProductMedia: 1,
