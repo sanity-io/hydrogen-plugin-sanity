@@ -17,6 +17,7 @@ export interface SanityQueryClientOptions {
   clientConfig?: ClientConfig
 
   shopifyVariables?: {
+    country?: string
     numProductMetafields?: number
     numProductVariants?: number
     numProductMedia?: number

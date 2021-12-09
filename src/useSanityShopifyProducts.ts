@@ -12,6 +12,7 @@ function getQuery(products: ProductWithFragment[]): string {
   // @TODO: replace with final ProductProviderFragment
   return `
   query getProducts(
+    $country: CountryCode
     $numProductMetafields: Int!
     $numProductVariants: Int!
     $numProductMedia: Int!
@@ -19,7 +20,7 @@ function getQuery(products: ProductWithFragment[]): string {
     $numProductVariantSellingPlanAllocations: Int!
     $numProductSellingPlanGroups: Int!
     $numProductSellingPlans: Int!
-  ) {
+  ) @inContext(country: $country) {
     ${products
       .map(
         (product, index) => `
