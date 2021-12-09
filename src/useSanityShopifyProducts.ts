@@ -68,7 +68,7 @@ const useSanityShopifyProducts = (sanityData: unknown, options: SanityQueryClien
 
   const shouldFetch = productsWithFragments.length > 0
 
-  const finalQuery = shouldFetch ? getQuery(productsWithFragments, shopifyVariables?.country) : undefined
+  const finalQuery = shouldFetch ? getQuery(productsWithFragments, shopifyVariables?.country || '') : undefined
 
   const {data: shopifyData} = useSkippableShopQuery<{[key: string]: any}>({
     query: finalQuery,
