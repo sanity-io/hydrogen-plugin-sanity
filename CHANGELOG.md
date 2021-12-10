@@ -7,6 +7,10 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- ## Unreleased -->
 
+## 0.2.0 - 2021-12-10
+
+- Add support for `shopifyVariables.country` in configuration for querying multi-locale stores.
+
 ## 0.1.0 - 2021-11-12
 
 - Initial release with `useSanityQuery` and `useSanityGraphQLQuery`
