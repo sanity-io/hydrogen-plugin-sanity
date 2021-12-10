@@ -1,6 +1,6 @@
 {
   "name": "hydrogen-plugin-sanity",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Hydrogen plugin for integrating with Sanity.io",
   "author": "Sanity <hello@sanity.io>",
   "license": "MIT",
