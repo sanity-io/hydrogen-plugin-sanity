@@ -9,7 +9,7 @@ This plugin for Shopify's Hydrogen lets you query Sanity data, combine it with l
 To add the plugin as a dependency to your project:
 
 ```bash
-yarn add @shopify/hydrogen-plugin-sanity # or `npm install`
+yarn add hydrogen-plugin-sanity # or `npm install`
 ```
 
 Then add a `sanity` object to `shopify.config.js` with your client configuration (options come from [@sanity/client](https://www.sanity.io/docs/js-client)):
@@ -36,7 +36,7 @@ Now you're ready to fetch data from a Sanity instance. Keep in mind that **queri
 
 ```js
 // Using GraphQL
-import {useSanityGraphQLQuery} from '@shopify/hydrogen-plugin-sanity'
+import {useSanityGraphQLQuery} from 'hydrogen-plugin-sanity'
 
 const {sanityData} = useSanityGraphQLQuery({
   query: gql`
@@ -61,7 +61,7 @@ const {sanityData} = useSanityGraphQLQuery({
 
 ```js
 // Using GROQ
-import {useSanityQuery} from '@shopify/hydrogen-plugin-sanity'
+import {useSanityQuery} from 'hydrogen-plugin-sanity'
 
 const {sanityData} = useSanityQuery({
   query: `*[_id == $homeId][0]{

@@ -4,7 +4,7 @@ import {UseShopQueryResponse} from '@shopify/hydrogen/dist/esnext/hooks/useShopQ
 
 /**
  * Copy of Hydrogen's default useShopQuery that allows you to pass an `undefined` query for not fetching any data.
- * Is required by @shopify/hydrogen-plugin-sanity because we won't always have data to query from Shopify, and can't break the Rules of Hooks by not calling `useShopQuery` when that isn't needed.
+ * Is required by by hydrogen-plugin-sanity because we won't always have data to query from Shopify, and can't break the Rules of Hooks by not calling `useShopQuery` when that isn't needed.
  */
 export function useSkippableShopQuery<T>({
   query,
