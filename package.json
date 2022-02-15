@@ -1,6 +1,6 @@
 {
   "name": "hydrogen-plugin-sanity",
-  "version": "0.2.0",
+  "version": "0.3.0-next.1",
   "description": "Hydrogen plugin for integrating with Sanity.io",
   "author": "Sanity <hello@sanity.io>",
   "license": "MIT",
@@ -31,9 +31,10 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-sanity": "^5.1.0",
     "prettier": "^2.5.1",
-    "typescript": "^4.5.5",
     "react": "0.0.0-experimental-529dc3ce8-20220124",
-    "react-dom": "0.0.0-experimental-529dc3ce8-20220124"
+    "react-dom": "0.0.0-experimental-529dc3ce8-20220124",
+    "react-router-dom": "^5.2.0",
+    "typescript": "^4.5.5"
   },
   "peerDependencies": {
     "@shopify/hydrogen": "^0.10.1",
