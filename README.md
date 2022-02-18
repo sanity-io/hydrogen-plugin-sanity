@@ -1,5 +1,7 @@
 # Sanity plugin for Hydrogen
 
+:warning:️ **Hydrogen is in developer preview and undergoing frequent breaking changes. This plugin is currently compatible with `@shopify/hydrogen <= 0.9`.** :warning:
+
 [Sanity](https://www.sanity.io/) is the platform for structured content that lets you build better digital experiences. Shopify customers can use Sanity Studio, our open-source content editing environment, to combine product and marketing information to build unique shopping experiences.
 
 This plugin for Shopify's Hydrogen lets you query Sanity data, combine it with live inventory, and present that information with Hydrogen components. A `useSanityQuery` React hook with an API similar to `useShopQuery` is exposed to efficiently and ergonomically fetch data from a Sanity instance.
