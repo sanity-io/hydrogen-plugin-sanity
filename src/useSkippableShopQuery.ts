@@ -20,10 +20,10 @@ export function useSkippableShopQuery<T>({
     throw new Error('Shopify Storefront API requests should only be made from the server.')
   }
 
-  const {storeDomain, storefrontToken, graphqlApiVersion} = useShop()
+  const {storeDomain, storefrontApiVersion, storefrontToken} = useShop()
 
   const body = query ? graphqlRequestBody(query, variables) : undefined
-  const url = `https://${storeDomain}/api/${graphqlApiVersion}/graphql.json`
+  const url = `https://${storeDomain}/api/${storefrontApiVersion}/graphql.json`
   const request = new Request(url, {
     method: 'POST',
     headers: {
@@ -34,7 +34,7 @@ export function useSkippableShopQuery<T>({
   })
 
   const {data} = useQuery<UseShopQueryResponse<T | undefined>>(
-    [storeDomain, graphqlApiVersion, body],
+    [storeDomain, storefrontApiVersion, body],
     query
       ? fetchBuilder<UseShopQueryResponse<T>>(request)
       : // If no query, return nothing

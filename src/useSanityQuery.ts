@@ -21,6 +21,7 @@ function useSanityQuery<T>({
   ...props
 }: UseSanityQueryProps): UseSanityQueryResponse<T> {
   const {apiVersion, projectId, useCdn, dataset, token} = useSanityConfig(props.clientConfig)
+
   const version = apiVersion || 'v2021-10-24'
   const baseDomain = `${projectId}.${useCdn ? 'apicdn' : 'api'}.sanity.io`
   const url = `https://${baseDomain}/${

@@ -1,33 +1,27 @@
-import {isClient, useShop} from '@shopify/hydrogen'
+import {isClient} from '@shopify/hydrogen'
 import {ClientConfig} from './types'
 
 const useSanityConfig = (config: Partial<ClientConfig> = {}): ClientConfig => {
   if (isClient()) {
-    throw new Error('Sanity requests should only be made from the server.')
+    throw new Error('Sanity requests should only be made in server components.')
   }
 
-  const shopifyConfig = useShop()
-  const globalClientConfig = ((shopifyConfig as any).sanity || {}) as Partial<ClientConfig>
-
-  if (!(config.projectId || globalClientConfig.projectId)) {
+  if (!config.projectId) {
     throw new Error(
-      '[hydrogen-plugin-sanity] Missing project ID.\n Pass it directly to the hook or set its value in the `sanity` object inside shopify.config.js.'
+      "[hydrogen-plugin-sanity] Missing project ID.\n Ensure it's defined in your hook's `clientConfig` object."
     )
   }
-  if (!(config.dataset || globalClientConfig.dataset)) {
+  if (!config.dataset) {
     throw new Error(
-      '[hydrogen-plugin-sanity] Missing dataset.\n Pass it directly to the hook or set its value in the `sanity` object inside shopify.config.js.'
+      "[hydrogen-plugin-sanity] Missing dataset.\n Ensure it's defined in your hook's `clientConfig` object."
     )
   }
-  if (!(config.apiVersion || globalClientConfig.apiVersion)) {
+  if (!config.apiVersion) {
     throw new Error(
-      '[hydrogen-plugin-sanity] Missing apiVersion.\n Pass it directly to the hook or set its value in the `sanity` object inside shopify.config.js.'
+      "[hydrogen-plugin-sanity] Missing apiVersion.\n Ensure it's defined in your hook's `clientConfig` object."
     )
   }
-  return {
-    ...globalClientConfig,
-    ...config
-  } as ClientConfig
+  return config as ClientConfig
 }
 
 export default useSanityConfig

@@ -1,6 +1,6 @@
 # Sanity plugin for Hydrogen
 
-:warning:️ **Hydrogen is in developer preview and undergoing frequent breaking changes. This plugin is currently compatible with `@shopify/hydrogen <= 0.9`.** :warning:
+:warning:️ **Hydrogen is in developer preview and undergoing frequent changes. This plugin is currently compatible with `@shopify/hydrogen >= 0.11.x`.** :warning:
 
 [Sanity](https://www.sanity.io/) is the platform for structured content that lets you build better digital experiences. Shopify customers can use Sanity Studio, our open-source content editing environment, to combine product and marketing information to build unique shopping experiences.
 
@@ -8,37 +8,33 @@ This plugin for Shopify's Hydrogen lets you query Sanity data, combine it with l
 
 ## Getting Started
 
-To add the plugin as a dependency to your project:
+Add the plugin as a dependency to your Hydrogen project:
 
 ```bash
 yarn add hydrogen-plugin-sanity # or `npm install`
 ```
 
-Then add a `sanity` object to `shopify.config.js` with your client configuration (options come from [@sanity/client](https://www.sanity.io/docs/js-client)):
+Create a separate file containing your Sanity configuration (refer to [@sanity/client](https://www.sanity.io/docs/js-client#api) for available options):
 
 ```js
-// shopify.config.js
+// sanity.config.js
 
 export default {
-  storeDomain: '...',
-  // ...
-  sanity: {
-    // Pull your Sanity configuration from environment variables
-    projectId: import.meta.VITE_SANITY_ID,
-    // Or add them directly inline
-    dataset: 'production',
-    apiVersion: 'v2021-06-07'
-  }
+  projectId: 'yourSanityProjectId',
+  dataset: 'production',
+  apiVersion: 'v2021-06-07'
 }
 ```
 
-Now you're ready to fetch data from a Sanity instance. Keep in mind that **queries must be ran in server components**.
+These Sanity settings must be included in every hook invocation. Also keep in mind these hooks **can only be run in server components**.
 
 ### Fetching Sanity data through GraphQL
 
 ```js
 // Using GraphQL
+
 import {useSanityGraphQLQuery} from 'hydrogen-plugin-sanity'
+import clientConfig from './sanity.config.js'
 
 const {sanityData} = useSanityGraphQLQuery({
   query: gql`
@@ -55,7 +51,8 @@ const {sanityData} = useSanityGraphQLQuery({
       }
     }
   `,
-  variables: {homeId: 'homepage'}
+  variables: {homeId: 'homepage'},
+  clientConfig
 })
 ```
 
@@ -63,22 +60,24 @@ const {sanityData} = useSanityGraphQLQuery({
 
 ```js
 // Using GROQ
+
 import {useSanityQuery} from 'hydrogen-plugin-sanity'
+import clientConfig from './sanity.config.js'
 
 const {sanityData} = useSanityQuery({
   query: `*[_id == $homeId][0]{
-      ...,
-      featuredProducts[] {
-        _id,
-        images[] {
-          asset {
-            _id
-          }
+    ...,
+    featuredProducts[] {
+      _id,
+      images[] {
+        asset {
+          _id
         }
       }
     }
-    `,
+  }`,
   params: {homeId: 'homepage'}
+  clientConfig,
 })
 ```
 
@@ -88,6 +87,7 @@ By default, the hook will automatically look for Shopify products referenced in 
 
 ```jsx
 import {BuyNowButton, ProductProvider} from '@shopify/hydrogen'
+import clientConfig from './sanity.config.js'
 
 const Homepage = () => {
   const {sanityData, shopifyProducts} = useSanityQuery({
@@ -101,8 +101,8 @@ const Homepage = () => {
           }
         }
       }
-    }
-    `
+    }`,
+    clientConfig
   })
 
   return (
