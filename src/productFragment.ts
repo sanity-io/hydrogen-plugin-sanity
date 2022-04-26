@@ -1,7 +1,3 @@
-/**
- * @shopify/hydrogen's ProductProviderFragment is duplicating some fragment declarations
- * @TODO: replace with ProductProviderFragment once ready
- */
 const productFragment = `
  fragment ProductProviderFragment on Product {
    compareAtPriceRange {

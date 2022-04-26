@@ -32,15 +32,15 @@ function useSanityGraphQLQuery<T>({
   if (token) {
     headers.Authorization = `Bearer ${token}`
   }
-  const request = new Request(url, {
+  const fetchOptions = {
     method: 'POST',
     headers,
     body
-  })
+  }
 
   const {data: sanityData, error} = useQuery<{data: T}>(
     [projectId, body],
-    fetchBuilder<{data: T}>(request)
+    fetchBuilder<{data: T}>(url, fetchOptions)
   )
 
   const shopifyProducts = useSanityShopifyProducts(sanityData?.data, props)

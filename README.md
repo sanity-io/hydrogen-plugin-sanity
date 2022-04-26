@@ -1,6 +1,6 @@
 # Sanity plugin for Hydrogen
 
-:warning:️ **Hydrogen is in developer preview and undergoing frequent changes. This plugin is currently compatible with `@shopify/hydrogen >= 0.11.x`.** :warning:
+:warning:️ **Hydrogen is in developer preview and undergoing frequent changes. This plugin is currently compatible with `@shopify/hydrogen >= 0.13.x`.** :warning:
 
 [Sanity](https://www.sanity.io/) is the platform for structured content that lets you build better digital experiences. Shopify customers can use Sanity Studio, our open-source content editing environment, to combine product and marketing information to build unique shopping experiences.
 

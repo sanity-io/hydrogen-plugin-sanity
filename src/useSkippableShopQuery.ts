@@ -24,19 +24,19 @@ export function useSkippableShopQuery<T>({
 
   const body = query ? graphqlRequestBody(query, variables) : undefined
   const url = `https://${storeDomain}/api/${storefrontApiVersion}/graphql.json`
-  const request = new Request(url, {
+  const fetchOptions = {
     method: 'POST',
     headers: {
       'X-Shopify-Storefront-Access-Token': storefrontToken,
       'content-type': 'application/json'
     },
     body
-  })
+  }
 
   const {data} = useQuery<UseShopQueryResponse<T | undefined>>(
     [storeDomain, storefrontApiVersion, body],
     query
-      ? fetchBuilder<UseShopQueryResponse<T>>(request)
+      ? fetchBuilder<UseShopQueryResponse<T>>(url, fetchOptions)
       : // If no query, return nothing
         // eslint-disable-next-line
         async () => ({data: undefined, errors: undefined})

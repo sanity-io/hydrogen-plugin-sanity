@@ -9,10 +9,9 @@ interface ProductWithFragment extends ProductToFetch {
 }
 
 function getQuery(products: ProductWithFragment[], country: string): string {
-  // @TODO: replace with final ProductProviderFragment
   return `
   query getProducts(
-    ${country ? "$country: CountryCode" : ""}
+    ${country ? '$country: CountryCode' : ''}
     $numProductMetafields: Int!
     $numProductVariants: Int!
     $numProductMedia: Int!
@@ -20,7 +19,7 @@ function getQuery(products: ProductWithFragment[], country: string): string {
     $numProductVariantSellingPlanAllocations: Int!
     $numProductSellingPlanGroups: Int!
     $numProductSellingPlans: Int!
-  ) ${country ? "@inContext(country: $country)" : ""} {
+  ) ${country ? '@inContext(country: $country)' : ''} {
     ${products
       .map(
         (product, index) => `
@@ -68,7 +67,9 @@ const useSanityShopifyProducts = (sanityData: unknown, options: SanityQueryClien
 
   const shouldFetch = productsWithFragments.length > 0
 
-  const finalQuery = shouldFetch ? getQuery(productsWithFragments, shopifyVariables?.country || '') : undefined
+  const finalQuery = shouldFetch
+    ? getQuery(productsWithFragments, shopifyVariables?.country || '')
+    : undefined
 
   const {data: shopifyData} = useSkippableShopQuery<{[key: string]: any}>({
     query: finalQuery,
