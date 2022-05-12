@@ -11,7 +11,7 @@ interface UseSanityQueryProps extends SanityQueryClientOptions {
   /** An object of the variables for the GROQ query. */
   params?: {[key: string]: unknown}
 
-  /** An object of the variables for the GROQ query. */
+  /** The options to manage the cache behavior of the sub-request. */
   queryOptions?: HydrogenUseQueryOptions,
 }
 
