@@ -1,4 +1,4 @@
-import {useQuery} from '@shopify/hydrogen'
+import {HydrogenUseQueryOptions, useQuery} from '@shopify/hydrogen'
 
 import {SanityQueryClientOptions, UseSanityQueryResponse} from './types'
 import useSanityConfig from './useSanityConfig'
@@ -10,6 +10,9 @@ interface UseSanityQueryProps extends SanityQueryClientOptions {
 
   /** An object of the variables for the GROQ query. */
   params?: {[key: string]: unknown}
+
+  /** An object of the variables for the GROQ query. */
+  queryOptions?: HydrogenUseQueryOptions,
 }
 
 /**
@@ -18,6 +21,7 @@ interface UseSanityQueryProps extends SanityQueryClientOptions {
 function useSanityQuery<T>({
   query,
   params = {},
+  queryOptions,
   ...props
 }: UseSanityQueryProps): UseSanityQueryResponse<T> {
   const {apiVersion, projectId, useCdn, dataset, token} = useSanityConfig(props.clientConfig)
@@ -52,7 +56,7 @@ function useSanityQuery<T>({
     // }
 
     return data.result
-  })
+  }, queryOptions)
 
   const shopifyProducts = useSanityShopifyProducts(sanityData, props)
 
