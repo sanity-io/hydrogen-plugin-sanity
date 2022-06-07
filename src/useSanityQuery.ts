@@ -1,4 +1,4 @@
-import {useQuery} from '@shopify/hydrogen'
+import {HydrogenUseQueryOptions, useQuery} from '@shopify/hydrogen'
 
 import {SanityQueryClientOptions, UseSanityQueryResponse} from './types'
 import useSanityConfig from './useSanityConfig'
@@ -10,6 +10,9 @@ interface UseSanityQueryProps extends SanityQueryClientOptions {
 
   /** An object of the variables for the GROQ query. */
   params?: {[key: string]: unknown}
+
+  /** Hydrogen query options */
+  queryOptions?: HydrogenUseQueryOptions
 }
 
 /**
@@ -28,31 +31,35 @@ function useSanityQuery<T>({
     version.startsWith('v') ? version : `v${version}`
   }/data/query/${dataset}`
 
-  const {data: sanityData, error} = useQuery<T>([query, params], async () => {
-    const data = await (
-      await fetch(url, {
-        method: 'POST',
-        headers: token
-          ? {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          : {
-              'Content-Type': 'application/json'
-            },
-        body: JSON.stringify({
-          query,
-          params
+  const {data: sanityData, error} = useQuery<T>(
+    [query, params],
+    async () => {
+      const data = await (
+        await fetch(url, {
+          method: 'POST',
+          headers: token
+            ? {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            : {
+                'Content-Type': 'application/json'
+              },
+          body: JSON.stringify({
+            query,
+            params
+          })
         })
-      })
-    ).json()
+      ).json()
 
-    // if (!data.result) {
-    //   throw new Error(data.error?.description || "[hydrogen-plugin-sanity] Couldn't fetch data")
-    // }
+      // if (!data.result) {
+      //   throw new Error(data.error?.description || "[hydrogen-plugin-sanity] Couldn't fetch data")
+      // }
 
-    return data.result
-  })
+      return data.result
+    },
+    props.queryOptions || {}
+  )
 
   const shopifyProducts = useSanityShopifyProducts(sanityData, props)
 

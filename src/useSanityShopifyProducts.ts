@@ -1,3 +1,4 @@
+import {HydrogenUseQueryOptions} from '@shopify/hydrogen'
 import extractProductsToFetch, {ProductToFetch} from './extractProductsToFetch'
 import getShopifyVariables from './getShopifyVariables'
 import productFragment from './productFragment'
@@ -35,7 +36,11 @@ function getQuery(products: ProductWithFragment[], country: string): string {
   `
 }
 
-const useSanityShopifyProducts = (sanityData: unknown, options: SanityQueryClientOptions) => {
+const useSanityShopifyProducts = (
+  sanityData: unknown,
+  options: SanityQueryClientOptions,
+  queryOptions?: HydrogenUseQueryOptions
+) => {
   const {getProductGraphQLFragment} = options
   const shopifyVariables = getShopifyVariables(options.shopifyVariables)
   const productsToFetch = extractProductsToFetch(sanityData)
@@ -73,7 +78,8 @@ const useSanityShopifyProducts = (sanityData: unknown, options: SanityQueryClien
 
   const {data: shopifyData} = useSkippableShopQuery<{[key: string]: any}>({
     query: finalQuery,
-    variables: shopifyVariables
+    variables: shopifyVariables,
+    queryOptions
   })
 
   const shopifyProducts = shopifyData
