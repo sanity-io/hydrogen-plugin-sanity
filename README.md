@@ -1,5 +1,37 @@
 # Sanity plugin for Hydrogen
 
+> 🚨 **This package is deprecated** 🚨
+>
+> We've deprecated this plugin as it promoted conducting larger fetches (at the page level) and using shared context. This was often difficult to reason about and worked against the benefits of using React Server Components.
+>
+> We recommend you keep fetching logic scoped to specific components that need them, even when deeply nested in Portable Text. You'll have much better control over exactly how much you fetch from the Storefront API whilst being able to define caching and prefetching logic on a per-component basis.
+>
+> **To run GROQ queries against your Sanity dataset, use the official [`@sanity/client`](https://github.com/sanity-io/client) library and fetch within Hydrogen's `useQuery`**:
+>
+> ```js
+> // MyServerComponent.server.jsx
+> import sanityClient from '@sanity/client'
+> import {useQuery} from '@shopify/hydrogen'
+>
+> const query = `*[_type == 'page' && slug.current == $slug]`
+> const params = {slug: 'about'}
+>
+> // Configure Sanity client
+> const client = sanityClient({
+>   apiVersion: 'v2022-05-01',
+>   dataset: 'your-dataset',
+>   projectId: 'your-project-id',
+>   useCdn: true
+> })
+>
+> export default function MyServerComponent() {
+>   const {data, error} = useQuery([query, params], async () => {
+>     return await client.fetch(query, params)
+>   })
+>   return <div>{JSON.stringify(data)}</div>
+> }
+> ```
+
 :warning:️ **Hydrogen is in developer preview and undergoing frequent changes. This plugin is currently compatible with `@shopify/hydrogen >= 0.13.x`.** :warning:
 
 [Sanity](https://www.sanity.io/) is the platform for structured content that lets you build better digital experiences. Shopify customers can use Sanity Studio, our open-source content editing environment, to combine product and marketing information to build unique shopping experiences.
