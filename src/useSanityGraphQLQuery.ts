@@ -1,5 +1,10 @@
 import {ASTNode} from 'graphql'
-import {useQuery, fetchBuilder, graphqlRequestBody} from '@shopify/hydrogen'
+import {
+  useQuery,
+  fetchBuilder,
+  graphqlRequestBody,
+  HydrogenUseQueryOptions
+} from '@shopify/hydrogen'
 
 import {SanityQueryClientOptions, UseSanityQueryResponse} from './types'
 import useSanityConfig from './useSanityConfig'
@@ -11,6 +16,9 @@ interface UseSanityGraphQLQueryProps extends SanityQueryClientOptions {
 
   /** An object of the variables for the GraphQL query. */
   variables?: {[key: string]: any}
+
+  /** Hydrogen query options */
+  queryOptions?: HydrogenUseQueryOptions
 }
 
 /**
@@ -43,7 +51,7 @@ function useSanityGraphQLQuery<T>({
     fetchBuilder<{data: T}>(url, fetchOptions)
   )
 
-  const shopifyProducts = useSanityShopifyProducts(sanityData?.data, props)
+  const shopifyProducts = useSanityShopifyProducts(sanityData?.data, props, props.queryOptions)
 
   return {
     sanityData: sanityData?.data,

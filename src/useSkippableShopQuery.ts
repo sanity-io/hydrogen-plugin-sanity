@@ -1,5 +1,12 @@
 import {ASTNode} from 'graphql'
-import {isClient, useShop, useQuery, fetchBuilder, graphqlRequestBody} from '@shopify/hydrogen'
+import {
+  isClient,
+  useShop,
+  useQuery,
+  fetchBuilder,
+  graphqlRequestBody,
+  HydrogenUseQueryOptions
+} from '@shopify/hydrogen'
 import {UseShopQueryResponse} from '@shopify/hydrogen/dist/esnext/hooks/useShopQuery/hooks'
 
 /**
@@ -8,13 +15,17 @@ import {UseShopQueryResponse} from '@shopify/hydrogen/dist/esnext/hooks/useShopQ
  */
 export function useSkippableShopQuery<T>({
   query,
-  variables = {}
+  variables = {},
+  queryOptions
 }: {
   /** A string of the GraphQL query. */
   query: ASTNode | string | undefined
 
   /** An object of the variables for the GraphQL query. */
   variables?: {[key: string]: any}
+
+  /** Hydrogen query options */
+  queryOptions?: HydrogenUseQueryOptions
 }): UseShopQueryResponse<T> {
   if (isClient()) {
     throw new Error('Shopify Storefront API requests should only be made from the server.')
@@ -39,7 +50,8 @@ export function useSkippableShopQuery<T>({
       ? fetchBuilder<UseShopQueryResponse<T>>(url, fetchOptions)
       : // If no query, return nothing
         // eslint-disable-next-line
-        async () => ({data: undefined, errors: undefined})
+        async () => ({data: undefined, errors: undefined}),
+    queryOptions
   )
 
   /**
